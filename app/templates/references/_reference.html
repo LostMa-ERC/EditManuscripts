@@ -1,0 +1,18 @@
+<table>
+    <tr>
+        <th></th>
+        <th>id</th>
+        <th>source</th>
+        <th>identifier</th>
+        <th>link</th>
+    </tr>
+    {% for c in citations %}
+    <tr>
+        <td><a class="button-red" href="{{ url_for('references.delete', page=page, rec_id=c['data_id'], ref_id=c['id'], unfinished=unfinished) }}">Delete</a></td>
+        <td>{{ c.id }}</td>
+        <td>{{ c.source }}</td>
+        <td>{{ c.identifier }}</td>
+        <td>{{ c.permalink }}</td>
+    </tr>
+    {% endfor %}
+</table>

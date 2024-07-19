@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}New Reference{% endblock %}</h1>
+<div class="pagination">
+  {% if prev_url %}
+    <a href="{{ prev_url }}">❮</a>
+  {% endif %}
+  <a href="{{ current_url }}">Back</a>
+  {% if next_url %}
+    <a href="{{ next_url }}">❯</a>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+{% include 'record/_record.html' %}
+
+<hr class="dashed">
+
+{% if citations %}
+    {% include 'references/_reference.html' %}
+{% endif %}
+
+<form class="post" method="post">
+    <label class="source" for="source">Source</label>
+        <input name="source" id="source" value="{{ request.form['source'] }}" required>
+    <label class="identifier" for="identifier">Identifier</label>
+        <input name="identifier" id="identifier" value="{{ request.form['identifier'] }}">
+    <label class="permalink" for="permalink">Permalink or URL</label>
+        <input name="permalink" id="permalink" value="{{ request.form['permalink'] }}" required>
+    <input type="submit" value="Create">
+</form>
+<hr>
+</form>
+
+{% endblock %}

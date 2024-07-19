@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Edit Archival Item{% endblock %}</h1>
+<div class="pagination">
+  {% if prev_url %}
+    <a href="{{ prev_url }}">❮</a>
+  {% endif %}
+  <a href="{{ current_url }}">Back</a>
+  {% if next_url %}
+    <a href="{{ next_url }}">❯</a>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+{% include 'record/_record.html' %}
+<hr class="dashed">
+  <form class="post" method="post">
+      <label class="form" for="collection">collection</label>
+        <input name="collection" id="collection" value="{{ request.form['collection'] or r['collection'] }}">
+      <label class="form" for="best_shelfmark">shelfmark</label>
+        <input name="best_shelfmark" id="best_shelfmark" value="{{ request.form['best_shelfmark'] or r['best_shelfmark'] }}" required>
+      <label class="form" for="old_shelfmarks">old shelfmarks (separated by |)</label>
+        <input name="old_shelfmarks" id="old_shelfmarks" value="{{ request.form['old_shelfmarks'] or r['old_shelfmarks'] }}">
+      <label class="form" for="ark">ARK</label>
+        <input name="ark" id="ark" value="{{ request.form['ark'] or r['ark'] }}">
+      <label class="form" for="digitization_url">digitization URL</label>
+        <input name="digitization_url" id="digitization_url" value="{{ request.form['digitization_url'] or r['best_url'] }}">
+      <label class="form" for="belatedly_compiled">belatedly compiled</label>
+        <input name="belatedly_compiled" id="belatedly_compiled" value="{{ request.form['belatedly_compiled'] or r['belatedly_compiled'] }}">
+      
+    <input type="submit" value="Approve">
+  </form>
+  <hr>
+  </form>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Edit References{% endblock %}</h1>
+<div class="pagination">
+  {% if prev_url %}
+    <a href="{{ prev_url }}">❮</a>
+  {% endif %}
+  <a href="{{ current_url }}">Back</a>
+  {% if next_url %}
+    <a href="{{ next_url }}">❯</a>
+  {% endif %}
+</div>
+{% endblock %}
+
+
+{% block content %}
+
+{% include 'record/_record.html' %}
+<hr class="dashed">
+
+{% if citations %}
+  {% include 'references/_reference.html' %}
+{% endif %}
+
+<div class="center">
+  <a class="button-green" href="{{ url_for('references.create', id=r['id'], page=page, unfinished=unfinished) }}">Add reference</a>
+</div>
+
+{% endblock %}

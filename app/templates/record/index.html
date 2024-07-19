@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Archival Items{% endblock %}</h1>
+  <div>{{ current }} / {{ total }}</div>
+  <div class="pagination">
+    {% if prev_url %}
+      <a href="{{ prev_url }}">❮</a>
+    {% endif %}
+    {% if next_url %}
+      <a href="{{ next_url }}">❯</a>
+    {% endif %}
+  </div>
+{% endblock %}
+
+{% block content %}
+  {% for r in records %}
+  <div class="center">
+    <a class="button-blue" href="{{ all_url }}">All</a>
+    <a class="button-blue" href="{{ unfinished_url }}">Unfinished</a>
+    <a class="button" href="{{ url_for('record.update', id=r['id'], page=page, unfinished=unfinished, ) }}">Edit Archival Item</a>
+    <a class="button" href="{{ url_for('references.index', id=r['id'], page=page, unfinished=unfinished) }}">Edit References</a>
+  </div>
+    {% include 'record/_record.html' %}
+    {% if r['n_refs'] %}
+    <div class="footer">
+      <span class="badge-finished">{{ r['n_refs'] }} References</span>
+    </div>
+    {% else %}
+    <div class="footer">
+      <span class="badge-unfinished">No References</span>
+    </div>
+    {% endif %}
+  {% endfor %}
+{% endblock %}
+
+{% block footer %}
+Finished {{ total_finished }}
+<progress id="determinate"  value="{{ total_finished }}" min="0" max="{{ total_all }}"></progress>
+{% endblock %}
