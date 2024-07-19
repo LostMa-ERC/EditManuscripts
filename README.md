@@ -2,7 +2,7 @@
 
 Local web application for ergonomically editing bibliographic details about manuscripts (Archival Items) in the database.
 
-```console
+```shell
 flask --app app run
 ```
 
@@ -21,14 +21,16 @@ flask --app app run
 
 1. Git clone this repository.
 
-```console
+```shell
 git clone git@github.com:LostMa-ERC/EditManuscripts.git
+```
+```shell
 cd EditManuscripts
 ```
 
 2. In a virtual Python environment (v. 3.12), install the requirements.
 
-```console
+```shell
 pip install -r requirements.txt
 ```
 
@@ -36,18 +38,18 @@ pip install -r requirements.txt
 
     - If you're starting from scratch, (a) load the CSV data you need in the [`./data`](data/) folder and (b) use the SQL script in [`schema-from-data.sql`](app/schema-from-data.sql).
 
-    ```console
+    ```shell
     flask --app app init-db-scratch
     ```
 
     - You can re-initiate the database from a version that you dumped from within the web application, which is initially saved to the instance of the web application's `./instance folder`.
 
-    ```console
+    ```shell
     flask --app app init-db
     ```
 
 4. Run the web application and start editing.
 
-```console
+```shell
 flask --app app run
 ```
