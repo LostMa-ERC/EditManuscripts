@@ -58,11 +58,11 @@ SELECT
 	sum(case when ToCheck like 'True' then 1 else 0 end)
 FROM (
 	SELECT r."institutional name", crm."repository H-ID", cf.Shelfmark , cf.repository, cf.idno, cf.row_id, cf.ToCheck, cf.Digitisation, cf.collection
-	FROM '/home/kchrist/Dev/flask/examples/tutorial/data/corpus_revu.csv' cf
-	LEFT JOIN '/home/kchrist/Dev/flask/examples/tutorial/data/corpus_repo_mapping.csv' crm 
+	FROM 'data/corpus_revu.csv' cf
+	LEFT JOIN 'data/corpus_repo_mapping.csv' crm 
 		ON cf.Settlement = crm.orig_Settlement 
 		AND cf.repository = crm.orig_repository 
-	LEFT JOIN '/home/kchrist/Dev/flask/examples/tutorial/data/repositories_export.csv' r
+	LEFT JOIN 'data/repositories_export.csv' r
 		ON r."repository H-ID" = crm."repository H-ID"
 	WHERE r."repository H-ID" is not null
 )
