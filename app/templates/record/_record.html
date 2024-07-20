@@ -1,103 +1,137 @@
 <article class="post">
-    <header>
-      <h1>
-          {% if r['best_shelfmark'] %}
-              {{ r['best_shelfmark'] }}
-          {% else %}
-          <span class="badge-unfinished">No shelfmark</span>
-          {% endif %}  
-          {% if r['finished'] %}
-              <span class="badge-finished">Finished</span> 
-          {% else %}
-              <span class="badge-unfinished">Unapproved</span>
-          {% endif %}
-      </h1>
-    </header>
-    <p class="about">{{ r['repository'] }} ({{ r['entries'] }} entries)</p>
-    <div class="table">
-      <h3>Heurist Entity</h3>
-      <table>
-        <tr>
-          <th>is conserved in</th>
-          <td>{{ r['repository'] }}</td>
-        </tr>
-        <tr>
-          <th>collection</th>
-          {% if r['collection'] %}
-            <td>{{ r['collection'] }}</td>
-          {% else %}
-            <td></td>
-          {% endif %}
-        </tr>
-        <tr>
-          <th>shelfmark</th>
-          {% if r['best_shelfmark'] %}
-            <td>{{ r['best_shelfmark'] }}</td>
-          {% else %}
-            <td></td>
-          {% endif %}
-        </tr>
-        <tr>
-          <th>old shelfmarks</th>
-          {% if r['old_shelfmarks'] %}
-            <td>{{ r['old_shelfmarks'] }}</td>
-          {% else %}
-            <td></td>
-          {% endif %}
-        </tr>
-        <tr>
-          <th>ARK</th>
-          {% if r['ark'] %}
-            <td>{{ r['ark'] }}</td>
-          {% else %}
-            <td></td>
-          {% endif %}
-        </tr>
-        <tr>
-          <th>digitization URL</th>
-          {% if r['best_url'] %}
-            <td><a href="{{ r['best_url'] }}" target="_blank">{{ r['best_url'] }}</a></td>
-          {% else %}
-            <td></td>
-          {% endif %}
-        </tr>
-        <tr>
-          <th>belatedly compiled</th>
-          {% if r['belatedly_compiled'] %}
-            <td>{{ r['belatedly_compiled'] }}</td>
-          {% else %}
-            <td></td>
-          {% endif %}
-        </tr>
-      </table>
-    </div>
-    <div class="table">
-      <h3>Other</h3>
-      <table>
-        <tr>
-          <th>Count</th>
-          <th>Type</th>
-          <th>Value</th>
-        </tr>
-        <tr>
-          <td>NA</td>
-          <td>Idno</td>
-          <td>{{ r['idno'] }}</td>
-        </tr>
+  <header>
+    <h1>
+      {% if r['finished'] %}
+      <span class="badge-finished">Approved</span>
+      {% else %}
+      <span class="badge-unfinished">Unapproved</span>
+      {% endif %} {% if r['best_shelfmark'] %} {{ r['best_shelfmark'] }} {% else
+      %}
+      <span class="badge-unfinished">No shelfmark</span>
+      {% endif %}
+    </h1>
+    {% if r['n_refs'] %}
+    <span style="margin-left: auto; margin-right: 0" class="badge-finished"
+      >{{ r['n_refs'] }} References</span
+    >
+    {% else %}
+    <span style="margin-left: auto; margin-right: 0" class="badge-unfinished"
+      >No References</span
+    >
+    {% endif %}
+  </header>
+  <p class="about">{{ r['repository'] }} ({{ r['entries'] }} entries)</p>
+  <div class="table">
+    <h3>Heurist Entity</h3>
+    <table>
+      <tr>
+        <th>is conserved in</th>
+        <td>{{ r['repository'] }}</td>
+      </tr>
+      <tr>
+        <th>collection</th>
+        {% if r['collection'] %}
+        <td>{{ r['collection'] }}</td>
+        {% else %}
+        <td></td>
+        {% endif %}
+      </tr>
+      <tr>
+        <th>shelfmark</th>
+        {% if r['best_shelfmark'] %}
+        <td>{{ r['best_shelfmark'] }}</td>
+        {% else %}
+        <td></td>
+        {% endif %}
+      </tr>
+      <tr>
+        <th>old shelfmarks</th>
+        {% if r['old_shelfmarks'] %}
+        <td>{{ r['old_shelfmarks'] }}</td>
+        {% else %}
+        <td></td>
+        {% endif %}
+      </tr>
+      <tr>
+        <th>Archival Resource Key</th>
+        {% if r['ark'] %}
+        <td>{{ r['ark'] }}</td>
+        {% else %}
+        <td></td>
+        {% endif %}
+      </tr>
+      <tr>
+        <th style="color: gray">library catalogue URL</th>
+        {% if r['catalogue_entry']%}
+        <td>{{ r['catalogue_entry'] }}</td>
+        {% else %}
+        <td></td>
+        {% endif %}
+      </tr>
+      <tr>
+        <th>digitization URL</th>
+        {% if r['best_url'] %}
+        <td>
+          <a href="{{ r['best_url'] }}" target="_blank">{{ r['best_url'] }}</a>
+        </td>
+        {% else %}
+        <td></td>
+        {% endif %}
+      </tr>
+      <tr>
+        <th style="color: gray">secondary digitization URL</th>
+        {% if r['secondary_digitization'] %}
+        <td>
+          <a href="{{ r['secondary_digitization'] }}" target="_blank"
+            >{{ r['secondary_digitization'] }}</a
+          >
+        </td>
+        {% else %}
+        <td></td>
+        {% endif %}
+      </tr>
+      <tr>
+        <th>belatedly compiled</th>
+        {% if r['belatedly_compiled'] %}
+        <td>{{ r['belatedly_compiled'] }}</td>
+        {% else %}
+        <td></td>
+        {% endif %}
+      </tr>
+    </table>
+  </div>
+  <h3>Contents</h3>
+  <ul>
+    {% if r['titles'] %} {% for t in r['titles'] %}
+    <li>{{ t }}</li>
+    {% endfor %} {% endif %}
+  </ul>
+  <div class="table">
+    <h3>Other</h3>
+    <table>
+      <tr>
+        <th>Count</th>
+        <th>Type</th>
+        <th>Value</th>
+      </tr>
+      <tr>
+        <td>NA</td>
+        <td>Idno</td>
+        <td>{{ r['idno'] }}</td>
+      </tr>
       {% for i in r['shelfmark_list'] %}
-        <tr>
-          <td>{{ i['count'] }}</td>
-          <td>Shelfmark</td>
-          <td>{{ i['name'] }}</td>
-        </tr>
+      <tr>
+        <td>{{ i['count'] }}</td>
+        <td>Shelfmark</td>
+        <td>{{ i['name'] }}</td>
+      </tr>
+      {% endfor %} {% for i in r['url_list'] %}
+      <tr>
+        <td>{{ i['count'] }}</td>
+        <td>URL</td>
+        <td><a href="{{ i['name'] }}" target="_blank">{{ i['name'] }}</a></td>
+      </tr>
       {% endfor %}
-      {% for i in r['url_list'] %}
-        <tr>
-          <td>{{ i['count'] }}</td>
-          <td>URL</td>
-          <td><a href="{{ i['name'] }}" target="_blank">{{ i['name'] }}</a></td>
-        </tr>
-      {% endfor %}
-      </table>
-    </div>
-  </article>
+    </table>
+  </div>
+</article>

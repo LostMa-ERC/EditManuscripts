@@ -1,29 +1,27 @@
-<!doctype html>
+<!DOCTYPE html>
 
 <head>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 
 <title>{% block title %}{% endblock %} - LostMa Editor</title>
 
 <nav>
-  <h1><a href="{{ url_for('index') }}">Home</a></h1>
-  <ul>
-      <li><a href="{{ url_for('record.dump') }}">Dump Database</a>
-  </ul>
+  <a class="button-blue" href="{{ url_for('record.dump') }}">Dump Database</a>
+  <a class="button-blue" href="{{ url_parser.all_docs_url }}"
+    >Scroll All Archival Items</a
+  >
+  <a class="button-blue" href="{{ url_parser.unfinished_url }}"
+    >Only Unapproved Archival Items</a
+  >
 </nav>
 <section class="content">
-  <header>
-    {% block header %}{% endblock %}
-  </header>
+  <header>{% block header %}{% endblock %}</header>
   {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
-  {% block content %}{% endblock %}
+  <div class="flash">{{ message }}</div>
+  {% endfor %} {% block content %}{% endblock %}
 </section>
 
 <section>
-  <footer>
-    {% block footer %}{% endblock %}
-  </footer>
+  <footer>{% block footer %}{% endblock %}</footer>
 </section>

@@ -5,17 +5,23 @@ DROP TABLE IF EXISTS Documents;
 CREATE TABLE Documents(
 	id INTEGER PRIMARY KEY,
 	finished BOOLEAN DEFAULT False,
-	repo_name VARCHAR,
+	repository VARCHAR,
+	city VARCHAR,
+	city_id INTEGER,
+	country VARCHAR,
 	repo_id VARCHAR,
-	n_unique_shelfmarks INTEGER,
-	n_records INTEGER,
+	associated_shelfmarks INTEGER,
+	entries INTEGER,
+	titles VARCHAR[],
 	shelfmark_hist MAP(VARCHAR, UBIGINT),
 	best_shelfmark VARCHAR,
 	old_shelfmarks VARCHAR,
-	digitization_url VARCHAR,
+	best_url VARCHAR,
+	secondary_digitization VARCHAR,
 	belatedly_compiled BOOLEAN,
 	idno VARCHAR,
 	ark VARCHAR,
+	catalogue_entry VARCHAR,
 	collection VARCHAR,
 	row_ids VARCHAR[],
 	urls MAP(VARCHAR, UBIGINT),
@@ -27,13 +33,17 @@ CREATE SEQUENCE IF NOT EXISTS id_sequence START 1;
 
 INSERT INTO Documents
 	(id,
-	repo_name,
+	repository,
+	city,
+	city_id,
+	country,
 	repo_id,
-	n_unique_shelfmarks,
-	n_records,
+	associated_shelfmarks,
+	entries,
+	titles,
 	shelfmark_hist,
 	best_shelfmark,
-	digitization_url,
+	best_url,
 	idno,
 	collection,
 	row_ids,
@@ -44,9 +54,13 @@ INSERT INTO Documents
 SELECT 
 	nextval('id_sequence'),
 	any_value("institutional name"), 
+	any_value("Place name"),
+	any_value("City (Place) H-ID"),
+	any_value("Country"),
 	"repository H-ID", 
 	count(distinct(Shelfmark)), 
 	count(row_id), 
+	list(distinct("TRI")),
 	histogram(Shelfmark), 
 	case when count(distinct(Shelfmark)) = 1 then any_value(Shelfmark) ELSE NULL END,
 	case when count(distinct(Digitisation)) = 1 and any_value(Digitisation) LIKE 'http%' THEN any_value(Digitisation) ELSE NULL END,
@@ -57,7 +71,7 @@ SELECT
 	sum(case when ToCheck like 'False' then 1 else 0 end), 
 	sum(case when ToCheck like 'True' then 1 else 0 end)
 FROM (
-	SELECT r."institutional name", crm."repository H-ID", cf.Shelfmark , cf.repository, cf.idno, cf.row_id, cf.ToCheck, cf.Digitisation, cf.collection
+	SELECT r."institutional name", r."Place name", r."City (Place) H-ID", cf."TRI", r.Country, crm."repository H-ID", cf.Shelfmark , cf.repository, cf.idno, cf.row_id, cf.ToCheck, cf.Digitisation, cf.collection
 	FROM 'data/corpus_revu.csv' cf
 	LEFT JOIN 'data/corpus_repo_mapping.csv' crm 
 		ON cf.Settlement = crm.orig_Settlement 

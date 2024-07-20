@@ -6,17 +6,28 @@ import duckdb
 from flask import Flask, current_app, g
 
 
-class ArchivalItem:
+def count_linked_references(db: duckdb.DuckDBPyConnection, id: int) -> int:
+    rel = db.sql(f"SELECT * FROM Citations WHERE data_id = {id}")
+    return rel.count("*").fetchone()[0]
+
+
+class Doc:
     def __init__(self, row: dict):
         self.id = row["id"]
         self.ark = row["ark"]
+        self.catalogue_entry = row["catalogue_entry"]
         self.finished = row["finished"]
-        self.repository = row["repo_name"]
-        self.associated_shelfmarks = row["n_unique_shelfmarks"]
-        self.entries = row["n_records"]
+        self.repository = row["repository"]
+        self.city = row["city"]
+        self.city_id = row["city_id"]
+        self.country = row["country"]
+        self.titles = row["titles"]
+        self.associated_shelfmarks = row["associated_shelfmarks"]
+        self.entries = row["entries"]
         self.best_shelfmark = row["best_shelfmark"]
         self.old_shelfmarks = row["old_shelfmarks"]
-        self.best_url = row["digitization_url"]
+        self.best_url = row["best_url"]
+        self.secondary_digitization = row["secondary_digitization"]
         self.belatedly_compiled = row["belatedly_compiled"]
         self.idno = row["idno"]
         self.collection = row["collection"]
@@ -38,6 +49,81 @@ class ArchivalItem:
             self.url_list = []
 
 
+class DocumentRelation:
+    def __init__(
+        self,
+        db: duckdb.DuckDBPyConnection,
+        id: int | None = None,
+        city: int | None = None,
+        unfinished: int | None = None,
+    ):
+        self.conn = db
+        self.total_rows = self.conn.table("Documents").count("*").fetchone()[0]
+        self.total_finished = (
+            self.conn.table("Documents").filter("finished").count("*").fetchone()[0]
+        )
+
+        if id and id != 0:
+            self.base = (
+                self.conn.table("Documents").order("country, city").filter(f"id = {id}")
+            )
+        elif city and city != 0:
+            self.base = (
+                self.conn.table("Documents")
+                .order("country, city")
+                .filter(f"city_id = {city}")
+            )
+        else:
+            self.base = self.conn.table("Documents").order("country, city")
+
+        if unfinished and unfinished == 1:
+            self.total_to_do = self.base.filter("NOT finished").count("*").fetchone()[0]
+        else:
+            self.total_to_do = self.base.count("*").fetchone()[0]
+
+    @property
+    def all(self) -> duckdb.DuckDBPyRelation:
+        return self.base
+
+    @property
+    def unfinished(self) -> duckdb.DuckDBPyRelation:
+        return self.base.filter("NOT finished")
+
+    @property
+    def finished(self) -> duckdb.DuckDBPyRelation:
+        rel = self.base.filter("finished")
+        return rel
+
+    def get_chunk(
+        self, unfinished: int, offset: int, limit: int = 1
+    ) -> duckdb.DuckDBPyRelation:
+        if unfinished and unfinished == 1:
+            rel = self.base.filter("NOT finished")
+        else:
+            rel = self.base
+        return rel.limit(limit, offset=offset)
+
+    @classmethod
+    def count(cls, base: duckdb.DuckDBPyRelation) -> int:
+        return base.count("*").fetchone()[0]
+
+    def to_dict(self, rel: duckdb.DuckDBPyRelation | None = None) -> Doc | list[Doc]:
+        if rel:
+            l = []
+            for row in rel.fetchall():
+                d = Doc({k: v for k, v in zip(rel.columns, row)})
+                n_refs = count_linked_references(db=self.conn, id=d.id)
+                d.__setattr__("n_refs", n_refs)
+                l.append(d)
+            return l
+        else:
+            rel = self.base
+            d = Doc({k: v for k, v in zip(rel.columns, rel.fetchone())})
+            n_refs = count_linked_references(db=self.conn, id=d.id)
+            d.__setattr__("n_refs", n_refs)
+            return d
+
+
 @dataclass
 class Citation:
     id: int
@@ -54,48 +140,13 @@ def get_next_id(db: duckdb.DuckDBPyConnection, table: str) -> int:
     return biggest_id + 1
 
 
-def get_all_records(
-    db: duckdb.DuckDBPyConnection, condition: str = ""
-) -> list[ArchivalItem]:
-    rel = db.sql(f"SELECT * FROM Documents {condition}")
-    row_dict = [{k: v for k, v in zip(rel.columns, r)} for r in rel.fetchall()]
-    return [ArchivalItem(row) for row in row_dict]
-
-
-def get_single_record(db: duckdb.DuckDBPyConnection, id: int) -> ArchivalItem:
-    rel = db.sql("SELECT * FROM Documents WHERE id = {}".format(id))
-    d = {k: v for k, v in zip(rel.columns, rel.fetchone())}
-    return ArchivalItem(d)
-
-
 def get_linked_references(
     db: duckdb.DuckDBPyConnection, id: int
 ) -> list[Citation] | None:
-    rel = db.sql("SELECT * FROM Citations WHERE data_id = {}".format(id))
+    rel = db.sql(f"SELECT * FROM Citations WHERE data_id = {id}")
     if rel:
         l = [{k: v for k, v in zip(rel.columns, r)} for r in rel.fetchall()]
         return [Citation(**d) for d in l]
-
-
-def paginate_records(
-    db: duckdb.DuckDBPyConnection, offset: int, limit: int = 1, condition: str = ""
-) -> list:
-    rel = db.sql(
-        f"SELECT * FROM Documents {condition} ORDER BY repo_name LIMIT {limit} OFFSET {offset}"
-    )
-    row_columns = rel.columns
-    chunk = []
-    for row in rel.fetchall():
-        d = {k: v for k, v in zip(row_columns, row)}
-        a = ArchivalItem(d)
-        id = d["id"]
-        refs = db.table("Citations").filter("data_id = {}".format(id))
-        if refs:
-            a.__setattr__("n_refs", len(refs))
-        else:
-            a.__setattr__("n_refs", None)
-        chunk.append(a)
-    return chunk
 
 
 def get_db():

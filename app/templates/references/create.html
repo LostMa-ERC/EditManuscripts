@@ -4,11 +4,11 @@
 <h1>{% block title %}New Reference{% endblock %}</h1>
 <div class="pagination">
   {% if prev_url %}
-    <a href="{{ prev_url }}">❮</a>
+    <a href="{{ url_parser.prev_url }}">❮</a>
   {% endif %}
-  <a href="{{ current_url }}">Back</a>
+  <a href="{{ url_parser.current_url }}">Back</a>
   {% if next_url %}
-    <a href="{{ next_url }}">❯</a>
+    <a href="{{ url_parser.next_url }}">❯</a>
   {% endif %}
 </div>
 {% endblock %}

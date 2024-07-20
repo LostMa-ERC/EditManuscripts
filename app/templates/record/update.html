@@ -3,12 +3,12 @@
 {% block header %}
 <h1>{% block title %}Edit Archival Item{% endblock %}</h1>
 <div class="pagination">
-  {% if prev_url %}
-    <a href="{{ prev_url }}">❮</a>
+  {% if url_parser.prev_url %}
+  <a href="{{ url_parser.prev_url }}">❮</a>
   {% endif %}
-  <a href="{{ current_url }}">Back</a>
-  {% if next_url %}
-    <a href="{{ next_url }}">❯</a>
+  <a href="{{ url_parser.current_url }}">Back</a>
+  {% if url_parser.next_url %}
+  <a href="{{ url_parser.next_url }}">❯</a>
   {% endif %}
 </div>
 {% endblock %}
@@ -25,8 +25,12 @@
         <input name="old_shelfmarks" id="old_shelfmarks" value="{{ request.form['old_shelfmarks'] or r['old_shelfmarks'] }}">
       <label class="form" for="ark">ARK</label>
         <input name="ark" id="ark" value="{{ request.form['ark'] or r['ark'] }}">
-      <label class="form" for="digitization_url">digitization URL</label>
-        <input name="digitization_url" id="digitization_url" value="{{ request.form['digitization_url'] or r['best_url'] }}">
+      <label class="form" for="catalogue_entry">library catalogue entry URL</label>
+        <input name="catalogue_entry" id="catalogue_entry" value="{{ request.form['catalogue_entry'] or r['catalogue_entry'] }}">
+      <label class="form" for="best_url">best digitization URL</label>
+        <input name="best_url" id="best_url" value="{{ request.form['best_url'] or r['best_url'] }}">
+      <label class="form" for="secondary_digitization">secondary digitization URL</label>
+        <input name="secondary_digitization" id="secondary_digitization" value="{{ request.form['secondary_digitization'] or r['secondary_digitization'] }}">
       <label class="form" for="belatedly_compiled">belatedly compiled</label>
         <input name="belatedly_compiled" id="belatedly_compiled" value="{{ request.form['belatedly_compiled'] or r['belatedly_compiled'] }}">
       
