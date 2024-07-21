@@ -1,13 +1,44 @@
-{% extends 'base.html' %} {% block header %}
+{% extends 'base.html' %} {% block sidenav %}
+<div class="sidenav">
+  {% include '_navbar.html' %}
+  <p>Current selection:</p>
+  <ul>
+    {% if url_parser.unfinished %}
+    <li>Only unapproved</li>
+    {% else %}
+    <li>All</li>
+    {% endif %} {% if city_label %}
+    <li>{{ city_label }}</li>
+    {% else %}
+    <li>No city selected</li>
+    {% endif %}
+  </ul>
+  <form method="post">
+    <input type="submit" value="Apply City Filter" />
+    <select id="city" name="city" data-dropdown>
+      {% if url_parser.city == 0 %}
+      <option id="city" value="0">-- select a city --</option>
+      {% else %}
+      <option id="city" value="0">Click apply to remove city</option>
+      {% endif %} {% for c in cities %}
+      <option id="city" value="{{ c['id'] }}">
+        {{ c['country'] }} | {{ c['name'] }} ({{ c['n'] }})
+      </option>
+      {% endfor %}
+    </select>
+  </form>
+</div>
+{% endblock %} {% block header %}
 <h1>
-  {% block title %}Approved {{ total_finished }} of {{ total_all }}
+  {% block title %} {% if url_parser.unfinished and url_parser.unfinished == 1
+  %} Unapproved Archival Items {% else %} All Archival Items {% endif %} {%
+  endblock %}
   <progress
     id="determinate"
     value="{{ total_finished }}"
     min="0"
     max="{{ total_all }}"
-  ></progress
-  >{% endblock %}
+  ></progress>
 </h1>
 <div>{{ url_parser.page }} / {{ total_to_do }}</div>
 <div class="pagination">
@@ -21,12 +52,12 @@
 <div class="center">
   <a
     class="button"
-    href="{{ url_for('record.update', id=r['id'], page=url_parser.page, unfinished=url_parser.unfinished, ) }}"
+    href="{{ url_for('record.update', city=url_parser.city, id=r['id'], page=url_parser.page, unfinished=url_parser.unfinished, ) }}"
     >Edit Archival Item</a
   >
   <a
     class="button"
-    href="{{ url_for('references.index', id=r['id'], page=url_parser.page, unfinished=url_parser.unfinished) }}"
+    href="{{ url_for('references.index', city=url_parser.city, id=r['id'], page=url_parser.page, unfinished=url_parser.unfinished) }}"
     >Edit References</a
   >
   {% if r['finished'] %}

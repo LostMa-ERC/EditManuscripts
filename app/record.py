@@ -12,6 +12,12 @@ class URLParser:
         self.doc_id = request.args.get("id", 0, type=int)
         self.city = request.args.get("city", 0, type=int)
         self.ref_id = request.args.get("ref_id", 0, type=int)
+        self._next_url = url_for(
+            "record.index",
+            unfinished=self.unfinished,
+            page=self.page + 1,
+            city=self.city,
+        )
 
     @property
     def prev_url(self) -> str:
@@ -27,12 +33,11 @@ class URLParser:
 
     @property
     def next_url(self) -> str:
-        return url_for(
-            "record.index",
-            unfinished=self.unfinished,
-            page=self.page + 1,
-            city=self.city,
-        )
+        return self._next_url
+
+    @next_url.setter
+    def next_url(self, value):
+        self._next_url = value
 
     @property
     def current_url(self) -> str:
@@ -77,6 +82,10 @@ def index():
     rel = DocumentRelation(
         db=db, city=url_parser.city, unfinished=url_parser.unfinished
     )
+    cities = rel.cities
+    current_city_label = None
+    if url_parser.city and url_parser.city != 0:
+        current_city_label = f"{rel.city_dict[url_parser.city]["name"]}"
 
     total_finished = rel.total_finished
     total_to_do = rel.total_to_do
@@ -84,11 +93,30 @@ def index():
 
     chunk = rel.get_chunk(unfinished=url_parser.unfinished, offset=offset)
     records = rel.to_dict(chunk)
+    if not isinstance(records, list):
+        records = []
+
+    if url_parser.page + 1 > total_to_do:
+        url_parser.next_url = None
+
+    if request.method == "POST":
+        city = request.form["city"]
+        return redirect(
+            url_for(
+                "record.index",
+                page=url_parser.page,
+                unfinished=url_parser.unfinished,
+                city=city,
+                city_label=current_city_label,
+            )
+        )
 
     return render_template(
         "record/index.html",
         records=records,
         url_parser=url_parser,
+        cities=cities,
+        city_label=current_city_label,
         total_to_do=total_to_do,
         total_all=total_all,
         total_finished=total_finished,

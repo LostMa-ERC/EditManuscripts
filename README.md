@@ -6,16 +6,10 @@ Local web application for ergonomically editing bibliographic details about manu
 flask --app app run
 ```
 
-![home page](img/homepage.png)
+Edit details about an Archival Item and add/delete bibliographic references from external databases, i.e. Biblissima.
 
-1. Edit details about the Archival Item.
-
-![edit archival item](img/edit_archival_item.png)
-
-2. Add and delete bibliographic references to the Archival Item in external databases, i.e. Biblissima.
-
-![add new reference](img/add_reference.png)
-![edit reference](img/edited_reference.png)
+![home page](img/homepage2.png)
+![home page2](img/homepage3.png)
 
 ## Set up
 

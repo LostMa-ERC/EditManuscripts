@@ -5,8 +5,13 @@ html {
 }
 
 body {
-  max-width: 80%;
-  margin: 0 auto;
+  max-width: 90%;
+  margin-left: 160px;
+    /* Same width as the sidebar + left position in px */
+    /* font-size: 28px; */
+    /* Increased text to enable scrolling */
+    padding: 0px 10px;
+  /* margin: 0 auto; */
   background: white;
 }
 
@@ -325,4 +330,54 @@ th, td {
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 .show {
   display: block;
+}
+
+.sidenav {
+  width: 150px;
+  position: fixed;
+  z-index: 1;
+  top: 20px;
+  left: 10px;
+  background: #eee;
+  overflow-x: hidden;
+  padding: 8px 0;
+}
+
+.sidenav input {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  color: #2196F3;
+  display: block;
+}
+
+.sidenav select {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  color: #2196F3;
+  display: block;
+}
+
+.sidenav form:hover {
+  color: #064579;
+}
+
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  color: #2196F3;
+  display: block;
+}
+
+.sidenav a:hover {
+  color: #064579;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {
+    padding-top: 15px;
+  }
+
+  .sidenav a {
+    font-size: 18px;
+  }
 }

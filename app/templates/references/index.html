@@ -1,4 +1,5 @@
-{% extends 'base.html' %} {% block header %}
+{% extends 'base.html' %} {% block sidenav %} {% include '_navbar.html' %} {%
+endblock %} {% block header %}
 <h1>{% block title %}Edit References{% endblock %}</h1>
 <div class="pagination">
   {% if prev_url %}

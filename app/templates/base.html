@@ -6,15 +6,25 @@
 
 <title>{% block title %}{% endblock %} - LostMa Editor</title>
 
-<nav>
-  <a class="button-blue" href="{{ url_for('record.dump') }}">Dump Database</a>
-  <a class="button-blue" href="{{ url_parser.all_docs_url }}"
-    >Scroll All Archival Items</a
-  >
-  <a class="button-blue" href="{{ url_parser.unfinished_url }}"
-    >Only Unapproved Archival Items</a
-  >
-</nav>
+<script>
+  const countrySelector = document.getElementById("city");
+  countrySelector.addEventListener("change", (evt) => {
+    const value = evt.target.value;
+    if (value) {
+      buildTable(
+        data.filter((row) => {
+          let [name, age, country, link] = row;
+          return country === value;
+        })
+      );
+    } else {
+      buildTable(data);
+    }
+  });
+</script>
+
+{% block sidenav %} {% endblock %}
+
 <section class="content">
   <header>{% block header %}{% endblock %}</header>
   {% for message in get_flashed_messages() %}

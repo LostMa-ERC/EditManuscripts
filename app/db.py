@@ -62,6 +62,13 @@ class DocumentRelation:
         self.total_finished = (
             self.conn.table("Documents").filter("finished").count("*").fetchone()[0]
         )
+        city_rel = self.conn.sql(
+            "SELECT city_id as id, any_value(city) as name, any_value(country) as country, count(*) as n FROM Documents GROUP BY city_id ORDER BY any_value(country)"
+        )
+        self.cities = [
+            {k: v for k, v in zip(city_rel.columns, row)} for row in city_rel.fetchall()
+        ]
+        self.city_dict = {v["id"]: v for v in self.cities}
 
         if id and id != 0:
             self.base = (
