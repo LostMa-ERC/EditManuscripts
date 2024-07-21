@@ -1,6 +1,6 @@
 from flask import Blueprint, flash, g, redirect, render_template, request, url_for
 
-from .db import DocumentRelation, get_db, dump_db, count_linked_references
+from .db import DocumentRelation, get_db, dump_db
 
 bp = Blueprint("record", __name__)
 
@@ -185,3 +185,28 @@ WHERE id = $id
         r=record,
         url_parser=url_parser,
     )
+
+
+@bp.route(
+    "/record/undo_approval",
+    methods=("POST", "GET"),
+)
+def undo_approval():
+    """Undo the finished value of a record."""
+
+    url_parser = URLParser()
+    db = get_db()
+    sql = f"""
+UPDATE Documents
+SET finished = False
+WHERE id = {url_parser.doc_id}
+"""
+    db.sql(sql)
+    return redirect(
+                url_for(
+                    "record.index",
+                    page=url_parser.page,
+                    unfinished=url_parser.unfinished,
+                    city=url_parser.city,
+                )
+            )

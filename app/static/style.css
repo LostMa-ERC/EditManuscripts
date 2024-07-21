@@ -152,6 +152,19 @@ input.danger {
 input[type=submit] {
   align-self: start;
   min-width: 10em;
+  background-color: darkkhaki;
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+input[type=submit]:hover {
+  background-color:green;
 }
 
 .form {
@@ -226,6 +239,10 @@ progress[value]
   border-radius: 12px;
 }
 
+.button:hover {
+  color: darkslategray;
+}
+
 .button-green {
   background-color:#4CAF50;
   border: none;
@@ -240,10 +257,14 @@ progress[value]
   border-radius: 12px;
 }
 
+.button-green:hover {
+  color: darkslategray;
+}
+
 .button-blue {
-  background-color:lightblue;
+  color: floralwhite;
+  background-color: cadetblue;
   border: none;
-  color:black;
   padding: 15px 32px;
   text-align: center;
   text-decoration: none;
@@ -252,6 +273,10 @@ progress[value]
   margin: 4px 2px;
   cursor: pointer;
   border-radius: 12px;
+}
+
+.button-blue:hover {
+  color: darkslategray;
 }
 
 .button-red {
@@ -346,30 +371,37 @@ th, td {
 .sidenav input {
   padding: 6px 8px 6px 16px;
   text-decoration: none;
-  color: #2196F3;
+  color:floralwhite;
+  background-color: cadetblue;
   display: block;
+  border-radius: 12px;
 }
 
 .sidenav select {
   padding: 6px 8px 6px 16px;
   text-decoration: none;
-  color: #2196F3;
+  color:floralwhite;
+  background-color: cadetblue;
   display: block;
-}
-
-.sidenav form:hover {
-  color: #064579;
 }
 
 .sidenav a {
   padding: 6px 8px 6px 16px;
   text-decoration: none;
-  color: #2196F3;
+  color:floralwhite;
   display: block;
 }
 
 .sidenav a:hover {
-  color: #064579;
+  color:darkslategray;
+}
+
+.sidenav input:hover {
+  color: darkslategray;
+}
+
+.sidenav select:hover {
+  color: darkslategray;
 }
 
 @media screen and (max-height: 450px) {

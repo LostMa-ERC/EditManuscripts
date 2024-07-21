@@ -1,19 +1,15 @@
 {% extends 'base.html' %}
 
 {% block sidenav %}
-{% include '_navbar.html' %}
+<div class="sidenav">
+  <a class="button" href="{{ url_parser.current_url }}">Return to Scroll</a>
+</div>
 {% endblock %}
 
 {% block header %}
-<h1>{% block title %}Edit Archival Item{% endblock %}</h1>
 <div class="pagination">
-  {% if url_parser.prev_url %}
-  <a href="{{ url_parser.prev_url }}">❮</a>
-  {% endif %}
-  <a href="{{ url_parser.current_url }}">Back</a>
-  {% if url_parser.next_url %}
-  <a href="{{ url_parser.next_url }}">❯</a>
-  {% endif %}
+  <h1>{% block title %}Edit Archival Item{% endblock %}
+</h1>
 </div>
 {% endblock %}
 

@@ -1,25 +1,25 @@
 {% extends 'base.html' %} {% block sidenav %}
 <div class="sidenav">
   {% include '_navbar.html' %}
-  <p>Current selection:</p>
+  <p>Current filter:</p>
   <ul>
     {% if url_parser.unfinished %}
-    <li>Only unapproved</li>
+    <li>Only Unapproved Items</li>
     {% else %}
-    <li>All</li>
+    <li>All Items</li>
     {% endif %} {% if city_label %}
     <li>{{ city_label }}</li>
     {% else %}
-    <li>No city selected</li>
+    <li>All Cities</li>
     {% endif %}
   </ul>
   <form method="post">
-    <input type="submit" value="Apply City Filter" />
+    <input type="submit" value="Apply Filter Below" />
     <select id="city" name="city" data-dropdown>
       {% if url_parser.city == 0 %}
       <option id="city" value="0">-- select a city --</option>
       {% else %}
-      <option id="city" value="0">Click apply to remove city</option>
+      <option id="city" value="0">Remove City Filter</option>
       {% endif %} {% for c in cities %}
       <option id="city" value="{{ c['id'] }}">
         {{ c['country'] }} | {{ c['name'] }} ({{ c['n'] }})
@@ -29,18 +29,6 @@
   </form>
 </div>
 {% endblock %} {% block header %}
-<h1>
-  {% block title %} {% if url_parser.unfinished and url_parser.unfinished == 1
-  %} Unapproved Archival Items {% else %} All Archival Items {% endif %} {%
-  endblock %}
-  <progress
-    id="determinate"
-    value="{{ total_finished }}"
-    min="0"
-    max="{{ total_all }}"
-  ></progress>
-</h1>
-<div>{{ url_parser.page }} / {{ total_to_do }}</div>
 <div class="pagination">
   {% if url_parser.prev_url %}
   <a href="{{ url_parser.prev_url }}">❮</a>
@@ -48,6 +36,12 @@
   <a href="{{ url_parser.next_url }}">❯</a>
   {% endif %}
 </div>
+<h1>
+  {% block title %} {% if url_parser.unfinished and url_parser.unfinished == 1
+  %} Unapproved Archival Items {% else %} All Archival Items {% endif %} {%
+  endblock %}
+</h1>
+<div>{{ url_parser.page }} / {{ total_to_do }}</div>
 {% endblock %} {% block content %} {% for r in records %}
 <div class="center">
   <a
@@ -61,7 +55,11 @@
     >Edit References</a
   >
   {% if r['finished'] %}
-  <a class="button-blue" href="">Undo Approval</a>
+  <a
+    class="button-blue"
+    href="{{ url_for('record.undo_approval', city=url_parser.city, id=r['id'], page=url_parser.page, unfinished=url_parser.unfinished) }}"
+    >Undo Approval</a
+  >
   {% endif %}
 </div>
 {% include 'record/_record.html' %} {% endfor %} {% endblock %} {% block footer

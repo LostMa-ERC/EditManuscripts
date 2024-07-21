@@ -1,7 +1,10 @@
-{% extends 'base.html' %} {% block sidenav %} {% include '_navbar.html' %} {%
-endblock %} {% block header %}
+{% extends 'base.html' %} {% block sidenav %}
+<div class="sidenav">
+  <a class="button" href="{{ url_parser.current_url }}">Return to Scroll</a>
+</div>
+{% endblock %} {% block header %}
 <h1>{% block title %}Edit References{% endblock %}</h1>
-<div class="pagination">
+<!-- <div class="pagination">
   {% if prev_url %}
   <a href="{{ url_parser.prev_url }}">❮</a>
   {% endif %}
@@ -9,7 +12,7 @@ endblock %} {% block header %}
   {% if next_url %}
   <a href="{{ url_parser.next_url }}">❯</a>
   {% endif %}
-</div>
+</div> -->
 {% endblock %} {% block content %} {% include 'record/_record.html' %}
 <hr class="dashed" />
 

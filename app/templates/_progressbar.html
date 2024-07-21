@@ -1,0 +1,10 @@
+<p>
+  <li>Approved Items:</li>
+  <li class="center">{{ total_finished }} / {{ total_all }}</li>
+  <progress
+    id="determinate"
+    value="{{ total_finished }}"
+    min="0"
+    max="{{ total_all }}"
+  ></progress>
+</p>
